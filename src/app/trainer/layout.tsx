@@ -137,13 +137,13 @@ const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div></div> {/* Empty div for spacing */}
             
             <div className="flex items-center gap-4">
-              <Badge count={5} size="small">
+              {/* <Badge count={5} size="small">
                 <CalendarOutlined className="text-lg cursor-pointer" />
               </Badge>
               
               <Badge count={3} size="small">
                 <TeamOutlined className="text-lg cursor-pointer" />
-              </Badge>
+              </Badge> */}
               
               <Dropdown placement="bottomRight">
                 {/* <Space className="cursor-pointer">
