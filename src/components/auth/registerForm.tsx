@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Checkbox, Form, Input, Segmented, message, DatePicker } from "antd";
+import { Button, Form, Input, Segmented, message, DatePicker } from "antd";
 import { useAuthActions, useAuthState } from "@/providers/authProvider";
 import { IClientRegistration, IUserRegistration } from "@/providers/authProvider/context";
 
@@ -11,7 +11,16 @@ const RegisterForm = () => {
   const { registerTrainer, registerClient } = useAuthActions();
   const { isPending } = useAuthState();
 
-  const onFinish = (values: any) => {
+  interface RegisterFormValues {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  contactNumber: string;
+  policiesAccepted: boolean;
+  //dateOfBirth?: string;
+ }
+  const onFinish = (values: RegisterFormValues) => {
     try {
       if (role === "Trainer") {
         const registrationData: IUserRegistration = {
@@ -36,7 +45,7 @@ const RegisterForm = () => {
           confirmPassword: values.confirmPassword,
           contactNumber: values.contactNumber,
           policiesAccepted: values.policiesAccepted,
-          dateOfBirth: values.dateOfBirth?.format('YYYY-MM-DD') || "",
+         // dateOfBirth: values.dateOfBirth?.format('YYYY-MM-DD') || "",
           role: "client",
         };
         registerClient(clientRegData);
@@ -151,9 +160,6 @@ const RegisterForm = () => {
           },
         ]}
       >
-        <Checkbox>
-          I accept MyGym's policies
-        </Checkbox>
       </Form.Item>
 
       <Form.Item>

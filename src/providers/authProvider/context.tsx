@@ -45,7 +45,7 @@ export interface IClientRegistration {
   email: string;
   password: string;
   confirmPassword: string;
-  dateOfBirth: string;
+  //dateOfBirth: string;
   contactNumber: string;
   policiesAccepted: boolean;
   role: string;

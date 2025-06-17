@@ -7,8 +7,12 @@ import { useState } from "react";
 export const LoginForm = () => {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
-
-  const onFinish = async (values: any) => {
+  interface LoginFormValues {
+    email: string;
+    password: string;
+    remember?: boolean;
+  }
+  const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
     try {
       await login(values);
