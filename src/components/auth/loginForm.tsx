@@ -7,11 +7,13 @@ import { useState } from "react";
 export const LoginForm = () => {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+
   interface LoginFormValues {
     email: string;
     password: string;
     remember?: boolean;
   }
+
   const onFinish = async (values: LoginFormValues) => {
     setLoading(true);
     try {
@@ -32,6 +34,7 @@ export const LoginForm = () => {
       initialValues={{ remember: true }}
       onFinish={onFinish}
       layout="vertical"
+      style={{maxWidth: 400, margin: "auto", paddingTop: "3rem"}}
     >
       <Form.Item
         label="Email"
