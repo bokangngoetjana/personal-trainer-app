@@ -18,8 +18,10 @@ const RegisterForm = () => {
   confirmPassword: string;
   contactNumber: string;
   policiesAccepted: boolean;
+  dateOfBirth?: string;
  }
-  const onFinish = (values: RegisterFormValues) => {
+  const onFinish = async (values: RegisterFormValues) => {
+    console.log("Form submitted with values:", values)
     try {
       if (role === "Trainer") {
         const registrationData: IUserRegistration = {
@@ -34,7 +36,7 @@ const RegisterForm = () => {
           activeState: true,
           trial: false,
         };
-        registerTrainer(registrationData);
+        await registerTrainer(registrationData);
         message.success("Trainer registration submitted!");
       } else {
         const clientRegData: IClientRegistration = {
@@ -47,7 +49,7 @@ const RegisterForm = () => {
          // dateOfBirth: values.dateOfBirth?.format('YYYY-MM-DD') || "",
           role: "client",
         };
-        registerClient(clientRegData);
+        await registerClient(clientRegData);
         message.success("Client registration submitted!");
       }
     } catch (error) {
@@ -60,10 +62,6 @@ const RegisterForm = () => {
     setRole(value);
     form.resetFields(["dateOfBirth"]); // Reset date of birth when switching roles
   };
-
-  if (isPending) {
-    return <div style={{ textAlign: 'center', padding: '2rem' }}>Loading...</div>;
-  }
 
   return (
     <Form

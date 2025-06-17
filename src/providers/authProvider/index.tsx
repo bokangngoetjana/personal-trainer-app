@@ -1,92 +1,68 @@
 "use client";
-
+import {useRouter} from "next/navigation"
 import React, { useReducer, useContext, useCallback } from "react";
 import { AuthReducer } from "./reducer";
+import { IUser } from "./context";
 import { INITIAL_STATE, AuthStateContext, AuthActionContext, IUserLogin, IUserRegistration, IClientRegistration } from "./context";
 import { loginPending, loginSuccess, loginError, registerTrainerPending, registerTrainerSuccess, registerTrainerError, registerClientPending, registerClientSuccess, registerClientError } from "./actions";
+import axiosInstance from "@/utils/axiosInstance";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
+export interface IAuthResponse {
+  user: IUser;
+  token: string;
+}
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+  const router = useRouter();
 
   const login = useCallback(async (userLogin: IUserLogin) => {
     dispatch(loginPending());
     try {
-      // Replace with your actual login API call
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userLogin),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-      
-      const data = await response.json();
-      dispatch(loginSuccess(data.user));
-      // You might want to store the token in cookies/localStorage here
+      const response = await axiosInstance.post<IAuthResponse>('/users/login', userLogin);
+      const {user, token} = response.data;
+
+      sessionStorage.setItem("token", token);
+      dispatch(loginSuccess(user));
+      router.push(user.role === "Trainer" ? "/trainer" : "client");
     } catch (error) {
       dispatch(loginError());
       console.error('Login error:', error);
       throw error;
     }
-  }, []);
+  }, [router]);
 
   const registerTrainer = useCallback(async (userRegistration: IUserRegistration) => {
     dispatch(registerTrainerPending());
     try {
-      // Replace with your actual trainer registration API call
-      const response = await fetch('/api/auth/register/trainer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userRegistration),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Trainer registration failed');
-      }
-      
-      const data = await response.json();
-      dispatch(registerTrainerSuccess(data.user));
+
+      const response = await axiosInstance.post<IAuthResponse>('/users/register/', userRegistration);
+      const {user} = response.data;
+      dispatch(registerTrainerSuccess(user));
+      router.push("/trainer");
     } catch (error) {
       dispatch(registerTrainerError());
       console.error('Trainer registration error:', error);
       throw error;
     }
-  }, []);
+  }, [router]);
 
   const registerClient = useCallback(async (clientRegistration: IClientRegistration) => {
     dispatch(registerClientPending());
     try {
-      // Replace with your actual client registration API call
-      const response = await fetch('/api/auth/register/client', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(clientRegistration),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Client registration failed');
-      }
-      
-      const data = await response.json();
-      dispatch(registerClientSuccess(data.user));
+      const response = await axiosInstance.post<IAuthResponse>('/trainers/register/client', clientRegistration);
+      const {user} = response.data;
+      dispatch(registerClientSuccess(user));
+      router.push("/client");
     } catch (error) {
       dispatch(registerClientError());
       console.error('Client registration error:', error);
       throw error;
     }
-  }, []);
+  }, [router]);
 
   return (
     <AuthStateContext.Provider value={state}>
