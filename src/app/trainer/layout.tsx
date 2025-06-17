@@ -9,7 +9,7 @@ import {
   AppstoreOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Dropdown, Badge, Typography } from "antd";
+import { Layout, Menu, theme, Dropdown, Typography } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 
 const { Header, Content, Sider } = Layout;
@@ -137,13 +137,13 @@ const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div></div> {/* Empty div for spacing */}
             
             <div className="flex items-center gap-4">
-              <Badge count={5} size="small">
+              {/* <Badge count={5} size="small">
                 <CalendarOutlined className="text-lg cursor-pointer" />
               </Badge>
               
               <Badge count={3} size="small">
                 <TeamOutlined className="text-lg cursor-pointer" />
-              </Badge>
+              </Badge> */}
               
               <Dropdown placement="bottomRight">
                 {/* <Space className="cursor-pointer">
