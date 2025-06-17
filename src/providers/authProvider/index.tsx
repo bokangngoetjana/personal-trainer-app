@@ -1,5 +1,5 @@
 "use client";
-
+import {useRouter} from "next/navigation"
 import React, { useReducer, useContext, useCallback } from "react";
 import { AuthReducer } from "./reducer";
 import { INITIAL_STATE, AuthStateContext, AuthActionContext, IUserLogin, IUserRegistration, IClientRegistration } from "./context";
@@ -11,12 +11,13 @@ interface AuthProviderProps {
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+  const router = useRouter();
 
   const login = useCallback(async (userLogin: IUserLogin) => {
     dispatch(loginPending());
     try {
       // Replace with your actual login API call
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/trainers/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,8 +42,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const registerTrainer = useCallback(async (userRegistration: IUserRegistration) => {
     dispatch(registerTrainerPending());
     try {
-      // Replace with your actual trainer registration API call
-      const response = await fetch('/api/auth/register/trainer', {
+
+      const response = await fetch('/api/trainers/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,18 +57,18 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       const data = await response.json();
       dispatch(registerTrainerSuccess(data.user));
+      router.push("/trainer");
     } catch (error) {
       dispatch(registerTrainerError());
       console.error('Trainer registration error:', error);
       throw error;
     }
-  }, []);
+  }, [router]);
 
   const registerClient = useCallback(async (clientRegistration: IClientRegistration) => {
     dispatch(registerClientPending());
     try {
-      // Replace with your actual client registration API call
-      const response = await fetch('/api/auth/register/client', {
+      const response = await fetch('/api/trainers/register/client', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
