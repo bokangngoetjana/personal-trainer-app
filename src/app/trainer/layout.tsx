@@ -9,7 +9,7 @@ import {
   AppstoreOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Dropdown, Badge, Typography } from "antd";
+import { Layout, Menu, theme, Dropdown, Typography } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 
 const { Header, Content, Sider } = Layout;
