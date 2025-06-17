@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Form, Input, Segmented, message, DatePicker } from "antd";
+import { Button, Form, Input,Checkbox, Segmented, message, DatePicker } from "antd";
 import { useAuthActions, useAuthState } from "@/providers/authProvider";
 import { IClientRegistration, IUserRegistration } from "@/providers/authProvider/context";
 
@@ -18,7 +18,6 @@ const RegisterForm = () => {
   confirmPassword: string;
   contactNumber: string;
   policiesAccepted: boolean;
-  //dateOfBirth?: string;
  }
   const onFinish = (values: RegisterFormValues) => {
     try {
@@ -160,6 +159,7 @@ const RegisterForm = () => {
           },
         ]}
       >
+        <Checkbox>I accept the terms and policies</Checkbox>
       </Form.Item>
 
       <Form.Item>
