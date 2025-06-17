@@ -48,6 +48,7 @@ export interface IClientRegistration {
   dateOfBirth: string;
   contactNumber: string;
   policiesAccepted: boolean;
+  role: string;
 }
 export interface IAuthActionContext{
     login: (userLogin: IUserLogin) => void;
@@ -62,3 +63,8 @@ export const INITIAL_STATE: IAuthStateContext = {
     user: undefined,
 }
 export const AuthStateContext = createContext<IAuthStateContext>(INITIAL_STATE);
+export const AuthActionContext = createContext<IAuthActionContext>({
+    login: () => {}, 
+    registerTrainer: () => {},
+    registerClient: () => {},
+});

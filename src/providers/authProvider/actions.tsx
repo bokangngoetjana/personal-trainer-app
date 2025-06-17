@@ -19,7 +19,7 @@ export enum AuthActionEnums {
 export const loginPending = createAction<IAuthStateContext>(
     AuthActionEnums.loginPending, () => ({isPending: true, isSuccess: false, isError: false})
 );
-export const loginSuccess =- createAction<IAuthStateContext, IUser>(
+export const loginSuccess = createAction<IAuthStateContext, IUser>(
     AuthActionEnums.loginSuccess,
     (user: IUser) => ({isPending: false, isSuccess: true, isError: false, user})
 );
@@ -35,7 +35,7 @@ export const registerTrainerPending = createAction<IAuthStateContext>(
 );
 export const registerTrainerSuccess = createAction<IAuthStateContext, IUser>(
   AuthActionEnums.registerTrainerSuccess,
-  () => ({ isPending: false, isSuccess: true, isError: false })
+  (user: IUser) => ({ isPending: false, isSuccess: true, isError: false, user })
 );
 export const registerTrainerError = createAction<IAuthStateContext>(
   AuthActionEnums.registerTrainerError,
@@ -49,7 +49,7 @@ export const registerClientPending = createAction<IAuthStateContext>(
 );
 export const registerClientSuccess = createAction<IAuthStateContext, IUser>(
   AuthActionEnums.registerClientSuccess,
-  () => ({ isPending: false, isSuccess: true, isError: false })
+  (user: IUser) => ({ isPending: false, isSuccess: true, isError: false, user })
 );
 export const registerClientError = createAction<IAuthStateContext>(
   AuthActionEnums.registerClientError,
