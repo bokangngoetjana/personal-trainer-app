@@ -56,7 +56,7 @@ export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
 
       const foodItems: IFood[] = response.data.data;
       dispatch(getFoodItemsByCategorySuccess(foodItems));
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       dispatch(getFoodItemsByCategoryError("Failed to fetch by category"));
     }
@@ -73,7 +73,7 @@ export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
 
       const foodItems: IFood[] = response.data.data;
       dispatch(getFoodItemsBySearchSuccess(foodItems));
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       dispatch(getFoodItemsBySearchError("Failed to search food items"));
     }
@@ -90,7 +90,7 @@ export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
 
       const createdFood: IFood = response.data.data;
       dispatch(createFoodItemSuccess(createdFood));
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       dispatch(createFoodItemError("Failed to create food item"));
     }

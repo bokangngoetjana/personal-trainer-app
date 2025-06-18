@@ -3,13 +3,12 @@
 import React from "react";
 import { 
   TeamOutlined, 
-  UserOutlined, 
-  CalendarOutlined, 
+  UserOutlined,  
   PlusOutlined,
   AppstoreOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Dropdown, Typography } from "antd";
+import { Layout, Menu, Dropdown, Typography } from "antd";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthState } from "@/providers/authProvider";
 
@@ -31,7 +30,7 @@ const siderStyle: React.CSSProperties = {
 const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const {token} = theme.useToken();
+  //const {token} = theme.useToken();
   const {user} = useAuthState();
 
   const menuItems = [
