@@ -39,7 +39,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch(registerTrainerPending());
     try {
 
-      const response = await axiosInstance.post<IAuthResponse>('/users/register/', userRegistration);
+      const response = await axiosInstance.post<IAuthResponse>('/users/register', userRegistration);
       const {user} = response.data;
       dispatch(registerTrainerSuccess(user));
       router.push("/trainer");
