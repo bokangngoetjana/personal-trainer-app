@@ -45,6 +45,8 @@ export interface IFoodActionContext {
   getFoodItemsBySearch: (token: string, searchTerm: string) => Promise<void>;
   createFoodItem: (token: string, foodInput: IFoodInput) => Promise<void>;
   clearCreatedFood: () => void;
+  updateFoodItem: (token: string, foodId: string, foodInput: IFoodInput) => Promise<void>;
+  //deleteFoodItem: (token: string, foodId: string) => Promise<void>;
 }
 export const INITIAL_FOOD_STATE: IFoodStateContext = {
   isPending: false,
@@ -62,4 +64,5 @@ export const FoodActionContext = createContext<IFoodActionContext>({
   getFoodItemsBySearch: async () => {},
   createFoodItem: async () => {},
   clearCreatedFood: () => {},
+  updateFoodItem: async () => {},
 });

@@ -60,7 +60,22 @@ export const foodReducer = handleActions<IFoodStateContext, IFoodStateContext>(
       ...state,
       ...action.payload,
     }),
-
+    [FoodActionEnums.updateFoodItemSuccess]: (state,action) => {
+        const updatedFood = action.payload?.createdFood;
+        if(!updatedFood || !state.foodItems)
+            return{
+        ...state,
+        ...action.payload
+        }
+          const updatedFoodItems = state.foodItems.map((item) =>
+            item._id === updatedFood._id ? updatedFood : item
+        );
+        return {
+            ...state,
+            ...action.payload,
+            foodItems: updatedFoodItems,
+        };
+    },
     // Clear Created Food
     [FoodActionEnums.clearCreatedFood]: (state, action) => ({
       ...state,

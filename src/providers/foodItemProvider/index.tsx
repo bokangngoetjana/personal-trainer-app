@@ -22,6 +22,9 @@ import {
   createFoodItemPending,
   createFoodItemSuccess,
   createFoodItemError,
+  updateFoodItemError,
+  updateFoodItemPending,
+  updateFoodItemSuccess,
   clearCreatedFood as clearCreatedFoodAction,
 } from "./actions";
 import axiosInstance from "@/utils/axiosInstance";
@@ -44,7 +47,22 @@ export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
       dispatch(getAllFoodItemsError("Failed to get food items"));
     }
   };
+  // Update Food Item
+const updateFoodItem = async (token: string, foodId: string, foodInput: IFoodInput) => {
+  dispatch(updateFoodItemPending());
+  try {
+    // Assuming your API endpoint for update is PUT /food/:id
+    const response = await axiosInstance.put<{ data: IFood }>(`/food/${foodId}`, foodInput, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
+    const updatedFood: IFood = response.data.data;
+    dispatch(updateFoodItemSuccess(updatedFood));
+  } catch (error) {
+    console.error(error);
+    dispatch(updateFoodItemError("Failed to update food item"));
+  }
+};
   // GET food items by category
   const getFoodItemsByCategory = async (token: string, category: string) => {
     dispatch(getFoodItemsByCategoryPending());
@@ -109,6 +127,7 @@ export const FoodProvider = ({ children }: { children: React.ReactNode }) => {
           getFoodItemsBySearch,
           createFoodItem,
           clearCreatedFood,
+          updateFoodItem,
         }}
       >
         {children}
