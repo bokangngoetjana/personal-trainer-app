@@ -34,8 +34,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   );
   const {trainerId, token} = response.data;
+  if (!token) {
+      throw new Error('No token returned by API');
+    }
   sessionStorage.setItem("token", token || "");
-  dispatch(loginSuccess({id: trainerId || "", role: "admin"} as IUser));
+  dispatch(loginSuccess({id: trainerId || "", role: "Trainer"} as IUser));
   router.push("/trainer");
  } catch (error){
   dispatch(loginError());
@@ -70,11 +73,11 @@ const registerTrainer = useCallback(
       );
 
       // NOTE: This endpoint returns { message, trainerId } — no token
-      const { trainerId } = response.data;
+      const { trainerId, token } = response.data;
+      sessionStorage.setItem("token", token || "");
       dispatch(
         registerTrainerSuccess({ id: trainerId!, role: 'Trainer' } as IUser)
       );
-
       message.success('Trainer registration successful.');
       router.push('/trainer'); // Redirect after register
     } catch (error) {
@@ -86,8 +89,6 @@ const registerTrainer = useCallback(
   },
   [router]
 );
-
-
 
   const registerClient = useCallback(
     async (clientRegistration: IClientRegistration) => {
