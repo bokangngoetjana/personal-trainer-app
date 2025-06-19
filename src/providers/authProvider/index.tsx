@@ -4,65 +4,125 @@ import React, { useReducer, useContext, useCallback } from "react";
 import { AuthReducer } from "./reducer";
 import { IUser } from "./context";
 import { INITIAL_STATE, AuthStateContext, AuthActionContext, IUserLogin, IUserRegistration, IClientRegistration } from "./context";
-import { loginPending, loginSuccess, loginError, registerTrainerPending, registerTrainerSuccess, registerTrainerError, registerClientPending, registerClientSuccess, registerClientError } from "./actions";
+import { registerTrainerSuccess, loginSuccess, loginError, registerTrainerPending, registerTrainerError, registerClientPending, registerClientSuccess, registerClientError } from "./actions";
 import axiosInstance from "@/utils/axiosInstance";
+import { message } from "antd";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 export interface IAuthResponse {
-  user: IUser;
-  token: string;
+  message?: string;
+  token?: string;
+  trainerId?:string;
+  clientId?: string;
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
   const router = useRouter();
 
-  const login = useCallback(async (userLogin: IUserLogin) => {
-    dispatch(loginPending());
-    try {
-      const response = await axiosInstance.post<IAuthResponse>('/users/login', userLogin);
-      const {user, token} = response.data;
-
-      sessionStorage.setItem("token", token);
-      dispatch(loginSuccess(user));
-      router.push(user.role === "Trainer" ? "/trainer" : "client");
-    } catch (error) {
-      dispatch(loginError());
-      console.error('Login error:', error);
-      throw error;
+ const login = useCallback(async (userLogin: IUserLogin) => {
+ try{
+   const payload = new URLSearchParams({
+    email: userLogin.email,
+    password: userLogin.password,
+  });
+  const response = await axiosInstance.post<IAuthResponse>(
+    "/users/login", payload,{
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
     }
-  }, [router]);
+  );
+  const {trainerId, token} = response.data;
+  sessionStorage.setItem("token", token || "");
+  dispatch(loginSuccess({id: trainerId || "", role: "admin"} as IUser));
+  router.push("/trainer");
+ } catch (error){
+  dispatch(loginError());
+  console.error("Login error: ", error);
+  throw error;
+ }
+ }, [router]);
 
-  const registerTrainer = useCallback(async (userRegistration: IUserRegistration) => {
+const registerTrainer = useCallback(
+  async (userRegistration: IUserRegistration) => {
     dispatch(registerTrainerPending());
     try {
+      // Construct the body like Postman
+      const body = new URLSearchParams();
+      body.append('name', userRegistration.name);
+      body.append('email', userRegistration.email);
+      body.append('password', userRegistration.password);
+      body.append('confirmPassword', userRegistration.confirmPassword);
+      body.append('role', 'admin');             // Fixed as per Postman
+      body.append('contactNumber', userRegistration.contactNumber);
+      body.append('planType', 'base');          // Fixed as per Postman
+      body.append('activeState', 'true');       // as string
+      body.append('trial', 'false');            // as string
+      body.append('policiesAccepted', 'true');  // as string
 
-      const response = await axiosInstance.post<IAuthResponse>('/users/register', userRegistration);
-      const {user} = response.data;
-      dispatch(registerTrainerSuccess(user));
-      router.push("/trainer");
+      const response = await axiosInstance.post<IAuthResponse>(
+        '/users/register',
+        body,
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }
+      );
+
+      // NOTE: This endpoint returns { message, trainerId } — no token
+      const { trainerId } = response.data;
+      dispatch(
+        registerTrainerSuccess({ id: trainerId!, role: 'Trainer' } as IUser)
+      );
+
+      message.success('Trainer registration successful.');
+      router.push('/trainer'); // Redirect after register
     } catch (error) {
       dispatch(registerTrainerError());
       console.error('Trainer registration error:', error);
+      message.error('Trainer registration failed.');
       throw error;
     }
-  }, [router]);
+  },
+  [router]
+);
 
-  const registerClient = useCallback(async (clientRegistration: IClientRegistration) => {
-    dispatch(registerClientPending());
-    try {
-      const response = await axiosInstance.post<IAuthResponse>('/trainers/register/client', clientRegistration);
-      const {user} = response.data;
-      dispatch(registerClientSuccess(user));
-      router.push("/client");
-    } catch (error) {
-      dispatch(registerClientError());
-      console.error('Client registration error:', error);
-      throw error;
-    }
-  }, [router]);
+
+
+  const registerClient = useCallback(
+    async (clientRegistration: IClientRegistration) => {
+      dispatch(registerClientPending());
+      try {
+        const payload = new URLSearchParams({
+          name: clientRegistration.name,
+          email: clientRegistration.email,
+          password: clientRegistration.password,
+          confirmPassword: clientRegistration.confirmPassword,
+          contactNumber: clientRegistration.contactNumber,
+          policiesAccepted: "true",
+        });
+
+        const response = await axiosInstance.post<IAuthResponse>(
+          "/users/register/mobile",
+          payload,
+          {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          }
+        );
+
+        const { clientId, token } = response.data;
+        if (token) sessionStorage.setItem("token", token);
+        dispatch(registerClientSuccess({ id: clientId || "", role: "Client" } as IUser));
+        router.push("/client");
+      } catch (error) {
+        dispatch(registerClientError());
+        console.error("Client registration error:", error);
+        throw error;
+      }
+    },
+    [router]
+  );
+
 
   return (
     <AuthStateContext.Provider value={state}>

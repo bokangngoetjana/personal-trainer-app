@@ -3,14 +3,14 @@
 import React from "react";
 import { 
   TeamOutlined, 
-  UserOutlined, 
-  CalendarOutlined, 
+  UserOutlined,  
   PlusOutlined,
   AppstoreOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Dropdown, Typography } from "antd";
+import { Layout, Menu, Dropdown, Typography } from "antd";
 import { useRouter, usePathname } from "next/navigation";
+import { useAuthState } from "@/providers/authProvider";
 
 const { Header, Content, Sider } = Layout;
 const { Text } = Typography;
@@ -30,10 +30,8 @@ const siderStyle: React.CSSProperties = {
 const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
-
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+  //const {token} = theme.useToken();
+  const {user} = useAuthState();
 
   const menuItems = [
     {
@@ -50,11 +48,6 @@ const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       key: "/trainer/clients/create",
       icon: <PlusOutlined />,
       label: "Add Client",
-    },
-    {
-      key: "/trainer/schedule",
-      icon: <CalendarOutlined />,
-      label: "Schedule",
     },
     {
       key: "/trainer/mealPlans",
@@ -88,21 +81,6 @@ const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     },
   ];
 
-//   const userMenu = (
-//     <Menu>
-//       <Menu.Item key="profile" onClick={() => router.push("/trainer/profile")}>
-//         <UserOutlined /> Profile
-//       </Menu.Item>
-//       <Menu.Item key="settings" onClick={() => router.push("/trainer/settings")}>
-//         <UserOutlined /> Settings
-//       </Menu.Item>
-//       <Menu.Divider />
-//       {/* <Menu.Item key="logout" onClick={logout}>
-//         <LogoutOutlined /> Logout
-//       </Menu.Item> */}
-//     </Menu>
-//   );
-
   return (
     <Layout hasSider className="min-h-screen">
       {/* Sidebar */}
@@ -132,30 +110,14 @@ const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       {/* Main Content */}
       <Layout>
         {/* Header */}
-        <Header>
+        <Header style={{ background: "#fff", padding: "0 24px" }}>
           <div className="flex justify-between items-center h-full">
-            <div></div> {/* Empty div for spacing */}
+            <Text strong>Welcome, {user?.name || "Trainer"}</Text>
+            <div>
+          </div> {/* Empty div for spacing */}
             
             <div className="flex items-center gap-4">
-              {/* <Badge count={5} size="small">
-                <CalendarOutlined className="text-lg cursor-pointer" />
-              </Badge>
-              
-              <Badge count={3} size="small">
-                <TeamOutlined className="text-lg cursor-pointer" />
-              </Badge> */}
-              
               <Dropdown placement="bottomRight">
-                {/* <Space className="cursor-pointer">
-                  <Avatar 
-                    size="default" 
-                    icon={<UserOutlined />} 
-                    src={user?.imageUrl}
-                  />
-                  <Text strong className="text-white">
-                    {user?.name || 'Trainer'}
-                  </Text>
-                </Space> */}
               </Dropdown>
             </div>
           </div>
@@ -167,8 +129,6 @@ const TrainerLayout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             style={{
               padding: 24,
               minHeight: 'calc(100vh - 112px)',
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
             }}
           >
             {children}
